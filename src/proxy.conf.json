@@ -1,0 +1,8 @@
+{
+    "/proxy": {
+      "target": "https://www.bitmex.com/api/",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {"^/proxy" : ""}
+    }
+}

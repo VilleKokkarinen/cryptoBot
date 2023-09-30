@@ -1,0 +1,25 @@
+<header class="header">
+  <div class="headercontainer" style="display:flex;flex-direction: row; justify-content: flex-start;">
+      <div class="header-img">
+        <img
+          src="../../../../assets/icon.png"
+          alt="header"
+          className="header-image"
+          style="height:58px;"
+        />
+      </div>
+      <div class="header-text" >
+        Charting / Trading Bot
+        <div style="font-size:10px;text-align: center;">
+          {{version}}
+        </div>
+      </div>
+      
+    <div [ngClass]="Settings.Show_Sidebar == false ? 'showroutedropdown' : 'routedropdown'" style="margin-left:5px; margin-right:5px;">
+      <app-route-dropdown></app-route-dropdown>
+    </div>
+    <div style="display:flex; justify-content: flex-end; margin-left:auto; margin-right:5px;">
+      <app-small-spinner></app-small-spinner>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,15 @@
+.form-group{
+    padding-bottom: 25px;
+}
+
+.settings-card{
+    padding:10px;
+    margin:10px;
+}
+
+.settings-label{
+    text-align: center;
+    align-items: center;
+    display: flex;
+    padding-right: 5px;
+}

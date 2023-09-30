@@ -1,0 +1,17 @@
+<div ngbDropdown #RouteDropDown="ngbDropdown" class="d-inline-block" autoClose="outside">
+    <button type="button" class="btn btn-outline-primary" id="RouteDropDownToggle" ngbDropdownToggle>
+        <i class="bi bi-list"></i>
+    </button>
+    <div ngbDropdownMenu style="padding: 0; overflow: hidden;">
+        <div style="overflow-y:auto; max-height:200px;">
+            <nav *ngFor="let Route of Routes">
+                <div class="sidebar-container" [routerLink]="[Route.Route]" [routerLinkActive]="['is-active']">
+                    <i class="bi bi-{{Route.Icon}} flex-icon"></i>
+                    <a class="nav-link">
+                        <span> {{Route.Name}} </span>
+                    </a>
+                </div>              
+            </nav>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+.loadingWrapper{
+    height: 45px;
+    width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loadingIcon {
+    z-index: 1000;
+    background: url(../../../../../assets/spinner.gif) repeat;
+    background-size: 40px;
+    height: 40px;
+    width: 40px;
+ 
+}

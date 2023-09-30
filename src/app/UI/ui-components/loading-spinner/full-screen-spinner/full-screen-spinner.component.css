@@ -1,0 +1,123 @@
+.fsloading-spinner-container {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+  }
+  
+  .fsloading-text {
+    display: block;
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    top: calc(50% - 100px);
+    width: fit-content;
+    text-align: center;
+    font-size: large;
+    color:black;
+    border-radius: 8px;
+    padding:2px 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .fsloading-spinner-wheel {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    top: calc(50% - 64px);
+    width: 64px;
+    height: 64px;
+    border: 4px solid var(--Primary_Border_Color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    animation: spin 750ms infinite ease-in-out;
+    -o-animation: spin 750ms infinite ease-in-out;
+    -ms-animation: spin 750ms infinite ease-in-out;
+    -webkit-animation: spin 750ms infinite ease-in-out;
+  }
+
+  .fsloading-spinner-wheel-inner {
+    content: "";
+    display: block;
+    position: absolute;
+    left: calc(50% - 24px);
+    top: calc(50% - 24px);
+    width: 48px;
+    height: 48px;
+    margin: 0 auto;
+    border: 4px solid var(--Accent_Border_Color);
+    border-radius: 50%;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    animation: spin-inner 1500ms infinite ease-in-out;
+    -o-animation: spin-inner 1500ms infinite ease-in-out;
+    -ms-animation: spin-inner 1500ms infinite ease-in-out;
+    -webkit-animation: spin-inner 1500ms infinite ease-in-out;
+  }
+  
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  
+  @-o-keyframes spin {
+    100% {
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  
+  @-ms-keyframes spin {
+    100% {
+      -ms-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  
+  @-webkit-keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes spin-inner {
+    100% {
+      transform: rotate(180deg);
+      transform: rotate(180deg);
+    }
+  }
+  
+  @-o-keyframes spin-inner {
+    100% {
+      -o-transform: rotate(180deg);
+      transform: rotate(180deg);
+    }
+  }
+  
+  @-ms-keyframes spin-inner {
+    100% {
+      -ms-transform: rotate(180deg);
+      transform: rotate(180deg);
+    }
+  }
+  
+  @-webkit-keyframes spin-inner {
+    100% {
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
+    }
+  }

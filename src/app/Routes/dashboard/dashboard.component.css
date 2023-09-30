@@ -1,0 +1,31 @@
+
+.dashboard-card{
+    border-radius: 8px;
+    margin-bottom:25px;
+}
+
+.dashboard-label{
+    padding:10px;
+    color: var(--Primary_Text_Color);
+}
+
+.dashboard-container{
+    padding:7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height:fit-content;
+    background-color: var(--Accent_Bg_Color);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--Accent_Border_Color);
+    border-radius: 5px;
+    box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.55);
+}
+
+.about-text{
+    font-size: 22px;
+    text-align: center;
+    color:var(--Primary_Text_Color);
+    font-size: large;
+}

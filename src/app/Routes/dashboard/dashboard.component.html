@@ -1,0 +1,32 @@
+<div class="padded-content" style="height: 100%; width: 100%;">
+    <div style="height: 100%; width: 100%; display:flex; flex-direction: column;">
+        <div class="form-group dashboard-card" style="padding:0; height:35%; width: 100%;">
+            <app-xbt-chart #xbtchart [ChartDataSubject]="ChartDataSubject" [Signals]="Signals"/>
+        </div>
+      
+        <div class="form-group dashboard-card" style="padding:0; height:12%; width: 100%;">
+            <app-rsi-chart [ChartDataSubject]="ChartDataSubject"></app-rsi-chart>
+        </div>
+
+        <div class="form-group dashboard-card" style="padding:0; height:12%; width: 100%;">
+            <app-strategy-macd [ChartDataSubject]="ChartDataSubject" [SignalSubject]="MacdSignals"/>
+        </div>
+
+        <div class="form-group dashboard-card" style="padding:0; height:13%; width: 100%;">
+            <app-strategy-stochastic [ChartDataSubject]="ChartDataSubject" [SignalSubject]="StochasticSignals"/>
+        </div>
+
+        <div class="form-group dashboard-card" style="padding:0; height:13%; width: 100%;">
+            <app-strategy-acceleration-bands [ChartDataSubject]="ChartDataSubject" [SignalSubject]="ABSignals"/>
+        </div>
+        
+        <div class="form-group dashboard-card" style="padding:0; height:13%; width: 100%;">
+            <app-strategy-projection-oscillator [ChartDataSubject]="ChartDataSubject" [SignalSubject]="POSignals"/>
+        </div>       
+        
+        <div class="form-group dashboard-card" style="padding:0; height:13%; width: 100%;">
+            <app-strategy-bollinger-bands [ChartDataSubject]="ChartDataSubject" [SignalSubject]="BBSignals"/>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="sidebarwrapper">
+    <div class="sidebarelement" [ngClass]="SideBarOpen === true ? 'SideBarOpen' : '' ">
+        <div class="sidebar">
+
+            <div class="sidebar-container" style="height:25px; cursor:pointer;" (click)="ToggleSideBar()">
+                <i *ngIf="SideBarOpen === true" class="bi bi-chevron-double-left" style="margin-left:auto; margin-right:5px;"></i>
+                <i *ngIf="SideBarOpen === false" class="bi bi-chevron-double-right" style="margin-left:auto; margin-right:7px;"></i>
+            </div>
+
+            <div *ngFor="let Route of _Routes; let i = index" [ngClass]="i == _Routes.length-1 ? 'bottom-route' : '' ">
+                <div class="sidebar-container" [ngClass]="i == _Routes.length-1 ? 'last-container' : '' " [routerLink]="[Route.Route]" [routerLinkActive]="['is-active']">
+                    <i class="bi bi-{{Route.Icon}} flex-icon"></i>
+                    <a class="nav-link">
+                        <span> {{Route.Name}} </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>

@@ -1,0 +1,13 @@
+<div class="body">
+    <app-header></app-header>
+    <div style="display:flex; flex-direction:row; overflow:hidden;" [style.height]="GetHeight()">
+        <div class="contentbody">
+            <app-sidebar *ngIf="Settings.Show_Sidebar == true"></app-sidebar>
+            <div class="content" [style.marginLeft]="GetContentMarginLeft()">
+                <router-outlet />
+            </div>
+        </div>
+    </div>
+    <app-footer></app-footer>
+    <notifier-container></notifier-container>
+</div>
