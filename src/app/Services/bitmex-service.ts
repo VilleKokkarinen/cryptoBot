@@ -104,9 +104,9 @@ export class BitMexService {
     })
   }
 
-  getCurrentPriceOfBicoin(): Promise<InstrumentData[]> {
+  getCurrentPriceOfXBT(): Promise<InstrumentData[]> {
     this.loader.addRequest();
-    var relativePath = `v1/instrument?symbol=${this.Symbol}&count=100&reverse=false`
+    var relativePath = `v1/instrument?symbol=XBTUSD&count=100&reverse=false`
     var totalUrl = `${this.url}${relativePath}`
 
     var fullurl = `/api/${relativePath}`
@@ -119,6 +119,27 @@ export class BitMexService {
         resolve(data)
       },(err)=>{
         this.notifier.notify("error", "Error getting current price from Bitmex (Check environment.ts apikey and apisec)")
+        console.log(err)
+        this.loader.reduceRequest();
+      })
+    })
+  }
+
+  getCurrentPriceOfSymbol(): Promise<InstrumentData[]> {
+    this.loader.addRequest();
+    var relativePath = `v1/instrument?symbol=${this.Symbol}&count=100&reverse=false`
+    var totalUrl = `${this.url}${relativePath}`
+
+    var fullurl = `/api/${relativePath}`
+    let options = {headers: this.GenerateHeaders("GET", fullurl)}
+
+    return new Promise((resolve) => {
+      this.http.get<InstrumentData[]>(totalUrl, options).subscribe(data => {
+        this.loader.reduceRequest();
+        this.notifier.notify("success", `Successfully got contract details for ${this.Symbol} from Bitmex`)
+        resolve(data)
+      },(err)=>{
+        this.notifier.notify("error", `Error getting contract details for ${this.Symbol} from Bitmex (Check environment.ts apikey and apisec)`)
         console.log(err)
         this.loader.reduceRequest();
       })
@@ -288,7 +309,7 @@ export class BitMexService {
 
     var firstPriceOfBitCoin = 0;
         
-    controller.getCurrentPriceOfBicoin().then((data) => {
+    controller.getCurrentPriceOfSymbol().then((data) => {
       firstPriceOfBitCoin = data[0].bidPrice;
     })
 
@@ -301,7 +322,7 @@ export class BitMexService {
   
       var currentPriceOfBTC = 0;
 
-      controller.getCurrentPriceOfBicoin().then((data) => {
+      controller.getCurrentPriceOfSymbol().then((data) => {
         if(side == "Buy")
           currentPriceOfBTC = data[0].bidPrice;
         else if( side == "Sell")

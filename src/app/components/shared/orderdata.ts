@@ -27,4 +27,5 @@ export class InstrumentData{
     lastPrice:number = 0;
     askPrice:number = 0; // this is the selling side
     bidPrice:number = 0; // this is the buying side
+    multiplier:number = 0;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ChartDataObject, StrategyData, StrategyDataLight } from '../components/shared/chartdata';
 import { Action, Asset, StrategyInfo, StrategyResult } from 'indicatorts';
 import { environment } from 'src/environments/environment';
+import { SettingsService } from './settings.service';
 
 export class GainsAndLosses{
   actionResult!: number[];
@@ -32,7 +33,20 @@ export class BacktestService {
   initialPosAmount = environment.initialPosAmount;
   initialBalance = 10000; // XBT
 
-  constructor() { }
+  contractValueMultiplier = 10000000; // for XBTUSD
+  baseContractValue = 0.0000001 // 100 XBt (satoshi)
+  adjustedContractValue = 1; //xbtusd contract value is 1 usd
+
+  constructor(private settingsService: SettingsService) {
+    
+    this.settingsService.SettingsChange.subscribe((data)=>{
+      //for example ethusd contract value is not 1 usd, but 100 satoshi per 1$ of eth, eg. if eth is 1500$ then contract value is 0.000001 * 1500 = 0.0015 XBT
+      
+      if(data.contractMultiplier >= 1)
+      this.adjustedContractValue = this.baseContractValue * data.contractMultiplier;
+    })
+
+   }
 
   checkSameLength(...values: number[][]): void {
     if (values.length > 0) {
@@ -60,12 +74,23 @@ export class BacktestService {
       var RealisedProfit = 0;
       var currentPrice = closings[i];
 
-
       if (actions[i] === Action.BUY) {
         if (balance > 0) {
 
           if(i > 0){
-            RealisedProfit = -1*((1/previousPrice) - (1/currentPrice))*this.initialPosAmount
+
+            if(this.adjustedContractValue == 1) // "XBTUSD"
+            {
+              RealisedProfit = ((1/previousPrice) - (1/currentPrice))*this.initialPosAmount
+            
+            }else{ // ETHUSD etc, which are margined against XBT
+              var margin = this.initialPosAmount * this.adjustedContractValue*previousPrice;
+              RealisedProfit = ((100/previousPrice) - (100/currentPrice))*this.initialPosAmount*this.adjustedContractValue*currentPrice
+              RealisedProfit = margin*RealisedProfit;
+            }
+
+            RealisedProfit = -1*RealisedProfit;  // -1 is because contract amount should be negative but it's positive in the settings...
+
             //console.log(`Sold at ${previousPrice} and bought at ${currentPrice} resulting in a profit of ${RealisedProfit} XBT`)
           }
          
@@ -74,7 +99,16 @@ export class BacktestService {
         if (balance > 0) {
 
           if(i > 0){
-            RealisedProfit = ((1/previousPrice) - (1/currentPrice))*this.initialPosAmount
+            if(this.adjustedContractValue == 1) // "XBTUSD"
+            {
+              RealisedProfit = ((1/previousPrice) - (1/currentPrice))*this.initialPosAmount
+            
+            }else{ // ETHUSD etc, which are margined against XBT
+              var margin = this.initialPosAmount* this.adjustedContractValue *previousPrice;
+              RealisedProfit = ((100/previousPrice) - (100/currentPrice))*this.initialPosAmount*this.adjustedContractValue*currentPrice
+              RealisedProfit = margin*RealisedProfit;
+            }
+
             //console.log(`Bought at ${previousPrice} and sold at ${currentPrice} resulting in a profit of ${RealisedProfit} XBT`)
           }
         }
@@ -144,7 +178,7 @@ export class BacktestService {
       };
     }
   
-    console.log("backtest result details",result[0])
+    //console.log("backtest result details",result[0])
 
     //result.sort((a, b) => b.gain - a.gain);
   

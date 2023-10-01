@@ -11,6 +11,8 @@ import { BitMexService } from 'src/app/Services/bitmex-service';
 import { environment } from 'src/environments/environment';
 import { NotifierService } from 'angular-notifier';
 import { BacktestService } from 'src/app/Services/backtest.service';
+import { SettingsService } from 'src/app/Services/settings.service';
+import { Settings } from 'src/app/components/settings/settings';
 
 @Component({
   selector: 'app-xbt-chart',
@@ -41,19 +43,25 @@ export class ChartXBTComponent implements AfterViewInit {
   Resolution:number = 60*24; // TimeFrame. 60 = 1h, 60*24 = 1D
   ResolutionGroup:number = environment.resolutionGroup;
 
+  currentpriceofbitcoin:number = 0;
+
+  Settings?:Settings;
+
   constructor(
     private chartService: ChartService,
     private CombineService: SignalCombineService,
     private bmexService:BitMexService,
     private notifier:NotifierService,
-    private backtestService: BacktestService
+    private backtestService: BacktestService,
+    private settingsService:SettingsService
     ) {
 
       if(this.Resolutionstring.endsWith("D"))
       {
         var numberValue = parseInt(this.Resolutionstring.replace("D",""));
         this.Resolution = numberValue*60*24;
-      }else{
+      }
+      else{
         this.Resolution = parseInt(this.Resolutionstring);
       }
 
@@ -70,13 +78,18 @@ export class ChartXBTComponent implements AfterViewInit {
       return;
     }
     this.updateSignalsTimer = setTimeout(() => {
-      
-    var weights1D :Record<string, number> = { // values i've found for diff timeframes
-      //1D: macd: 0.45515547566567083, stochastic: 0.00009818405070083358, acceleration_bands: 0.6705925197643613, bollinger_bands: 0.05919849595985105, projection_oscillator: 0.22701323432996046
-      //1H macd: 0.9663860786129329, stochastic: 0.011633330719404755, acceleration_bands: 0.14856049901701096, bollinger_bands: 0.4288228236895997, projection_oscillator: 0.5972443175084314
-      //4H macd: 0.9425590749558298, stochastic: 0.11197424263221256, acceleration_bands: 0.3265010389261386, bollinger_bands: 0.17467411002229383, projection_oscillator: 0.08105680691039474
-      //12H macd: 0.6761709973145903, stochastic: 0.013277639685799869, acceleration_bands: 0.017039059227268893, bollinger_bands: 0.15768774834969024, projection_oscillator: 0.1117831595982938
-      macd: 0.45515547566567083, stochastic: 0.00009818405070083358, acceleration_bands: 0.6705925197643613, bollinger_bands: 0.05919849595985105, projection_oscillator: 0.22701323432996046
+
+    // values i've found for diff timeframes for XBTUSD, i would recommend 12h/1d minimum
+    //1D: macd: 0.6726531349452864, stochastic: 0.023239836968729555, acceleration_bands: 0.0781319086508272, bollinger_bands: 0.12826292422259034, projection_oscillator: 0.09890973905581824
+    //1H  macd: 0.5414343128487697, stochastic: 0.06645752134209515, acceleration_bands: 0.3291388202065856, bollinger_bands: 0.16920998543153687, projection_oscillator: 0.507146695308129
+    //4H  macd: 0.13250845348731477, stochastic: 0.3895107730112096, acceleration_bands: 0.5170090936163697, bollinger_bands: 0.3284579464646433, projection_oscillator: 0.927464334170312
+    //12H  macd: 0.9806482964072836, stochastic: 0.04096436580434304, acceleration_bands: 0.17059452945248166, bollinger_bands: 0.15960839194727372, projection_oscillator: 0.09847932192081865
+
+    // ETHUSD :
+    // 1D macd: 0.14832254932217392, stochastic: 0.05113434253603899, acceleration_bands: 0.11559234302799382, bollinger_bands: 0.1360943593549424, projection_oscillator: 0.9264391019135609
+
+    var weights1D :Record<string, number> = {
+      macd: 0.6726531349452864, stochastic: 0.023239836968729555, acceleration_bands: 0.0781319086508272, bollinger_bands: 0.12826292422259034, projection_oscillator: 0.09890973905581824
     }
 
     var timestamps = this.SignalsData.map(x => x.time);
@@ -84,10 +97,9 @@ export class ChartXBTComponent implements AfterViewInit {
 
     /*
     var bestWeights = JSON.parse(JSON.stringify(weights1D));
-    var bestResult = -1; // replace this, and weights above when you get a new best result.
+    var bestResult = -0.005710898276447551; // replace this, and weights above when you get a new best result.
 
-    // somewhat brute force, but it does randomize the values a lot... 
-    
+    // somewhat brute force, but it does randomize the values a lot...     
     for(var i = 0; i < 0; i ++){
       
       weights1D["macd"] = Math.random();
@@ -141,8 +153,7 @@ export class ChartXBTComponent implements AfterViewInit {
 
     if(bestWeights != null)
     weights1D = bestWeights;
-  */
-    
+  */    
 
     var result = this.CombineService.combineSentiments(this.SignalsData, timestamps, weights1D);
 
@@ -202,10 +213,8 @@ export class ChartXBTComponent implements AfterViewInit {
 
     var backtestres = this.backtestService.backtest(backtestAsset,strategyInfos)
 
-    this.bmexService.getCurrentPriceOfBicoin().then(data => {
-      var currentpriceofbitcoin = data[0].bidPrice
-      console.log(`(backtest) position size: ${environment.initialPosAmount} contracts | profit or loss => XBT: ${backtestres[0].gain} | USD: ${(backtestres[0].gain)*currentpriceofbitcoin}`);
-    })
+  
+    console.log(`(backtest) position size: ${environment.initialPosAmount} contracts | profit or loss => XBT: ${backtestres[0].gain} | USD: ${(backtestres[0].gain)*this.currentpriceofbitcoin}`);
 
   
     this.updateSignalsTimer = null;
@@ -225,7 +234,20 @@ export class ChartXBTComponent implements AfterViewInit {
     setTimeout(() => {
       SharedService.waitFor(() => this.SignalsData.length > 0, () => { 
         setTimeout(() => {
-          this.updateSignals();
+
+          this.bmexService.getCurrentPriceOfSymbol().then(data => {
+            this.settingsService.Settings.contractMultiplier = data[0].multiplier;
+            this.settingsService.SaveSettings();
+
+            this.bmexService.getCurrentPriceOfXBT().then(data => {
+              this.currentpriceofbitcoin = data[0].bidPrice
+            })
+          })
+          
+          SharedService.waitFor(() => this.currentpriceofbitcoin > 0, () => { 
+            this.updateSignals();
+          })
+       
         }, 1000);
       })
     }, 100);
